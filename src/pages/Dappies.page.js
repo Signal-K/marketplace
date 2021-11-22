@@ -1,5 +1,4 @@
 import React from 'react'
-
 import useDappyTemplates from '../hooks/use-dappy-templates.hook'
 import DappyList from '../components/DappyList'
 import Header from '../components/Header'

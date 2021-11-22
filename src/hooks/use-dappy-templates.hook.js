@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react'
+import {query} from '@onflow/fcl'
 import { defaultReducer } from '../reducer/defaultReducer'
 import DappyClass from '../utils/DappyClass'
-import { generateDappies } from '../utils/dappies.utils'
 
 export default function useDappyTemplates() {
   const [state, dispatch] = useReducer(defaultReducer, { loading: false, error: false, data: [] })
@@ -10,7 +10,9 @@ export default function useDappyTemplates() {
     const fetchDappyTemplates = async () => {
       dispatch({ type: 'PROCESSING' })
       try {
-        let res = generateDappies()
+        let res = await query({
+          cadence: 
+        })
         let mappedDappies = Object.values(res).map(d => {
           return new DappyClass(d?.templateID, d?.dna, d?.name, d?.price)
         })
