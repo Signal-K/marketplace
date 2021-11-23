@@ -11,7 +11,13 @@ export default function useDappyTemplates() {
       dispatch({ type: 'PROCESSING' })
       try {
         let res = await query({
-          cadence: 
+          cadence: `
+            import DappyContract from 0xDappy
+
+            pub fun main(): {UInt32: DappyContract.Template} {
+              return DappyContract.listTemplates()
+            }
+          `
         })
         let mappedDappies = Object.values(res).map(d => {
           return new DappyClass(d?.templateID, d?.dna, d?.name, d?.price)
