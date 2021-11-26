@@ -14,10 +14,14 @@ export default function useCollection() {
           import DappyContract from 0xDappy
 
           pub fun main(addr: Address): Bool {
-            let ref = getAccount(addr).getCapability<
+            let ref = getAccount(addr).getCapability<&{DappyContract.CollectionPublic}>(DappyContract.CollectionPublicPath).check()
+            return ref
           }
-        `
+        `,
+        args: (arg, t) => [arg(user?.addr, t.Address)] // t = type
         })
+        setCollection(res)
+        setLoading(false)
       } catch (err) { // Simple error catching scaffolding. Should probably implement something more sophisticated
         console.log(err)
         setLoading(false)
