@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { cadence, query } from '@onflow/fcl'
+import { CHECK_COLLECTION } from '../flow/check-collection.script'
 
 export default function useCollection() {
   const [loading, setLoading] = useState(true)
@@ -10,17 +11,11 @@ export default function useCollection() {
     const checkCollection = async () => {
       try {
         let res = await query({
-        cadence: `
-          import DappyContract from 0xDappy
-
-          pub fun main(addr: Address): Bool {
-            let ref = getAccount(addr).getCapability<&{DappyContract.CollectionPublic}>(DappyContract.CollectionPublicPath).check()
-            return ref
-          }
-        `,
+        cadence: CHECK_COLLECTION,
         args: (arg, t) => [arg(user?.addr, t.Address)] // t = type
         })
         setCollection(res)
+        console.log(res); // If the user has a collection enabled
         setLoading(false)
       } catch (err) { // Simple error catching scaffolding. Should probably implement something more sophisticated
         console.log(err)
