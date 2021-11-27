@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { cadence, query } from '@onflow/fcl'
+import { cadence, query, mutate } from '@onflow/fcl'
 import { CHECK_COLLECTION } from '../flow/check-collection.script'
 
 export default function useCollection() {
@@ -26,6 +26,28 @@ export default function useCollection() {
   }, [])
 
   const createCollection = async () => {
+    try {
+      let res = await mutate({
+        cadence: `
+          import DappyContract from 0xDappy
+
+          transaction {
+            prepare(acct: AuthAccount) {
+              let collection <- DappyContract.createEmptyCollection()
+              acct.save<@DappyContract.Collection>(<-collection, to: DappyContract.CollectionStoragePath)
+              acct.link<&{DappyContract.CollectionPublic}>(DappyContract.CollectionPublicPath, target: DappyContract.CollectionStoragePath)
+            }
+
+            execute {
+
+            }
+          }
+        `
+      })
+    } catch (err) {
+      console.log(err)
+      setLoading(false)
+    }
     setCollection(true)
   }
 
