@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { cadence, query, mutate } from '@onflow/fcl'
+import { cadence, query, mutate, tx } from '@onflow/fcl'
 import { CHECK_COLLECTION } from '../flow/check-collection.script'
+import { CREATE_COLLECTION } from '../flow/create-collection.tx'
 
 export default function useCollection() {
   const [loading, setLoading] = useState(true)
@@ -28,30 +29,30 @@ export default function useCollection() {
   const createCollection = async () => {
     try {
       let res = await mutate({
-        cadence: `
-          import DappyContract from 0xDappy
-
-          transaction {
-            prepare(acct: AuthAccount) {
-              let collection <- DappyContract.createEmptyCollection()
-              acct.save<@DappyContract.Collection>(<-collection, to: DappyContract.CollectionStoragePath)
-              acct.link<&{DappyContract.CollectionPublic}>(DappyContract.CollectionPublicPath, target: DappyContract.CollectionStoragePath)
-            }
-
-            execute {
-
-            }
-          }
-        `
-      })
+        cadence: CREATE_COLLECTION,
+        limit: 55 // gas limit
+      });
+      await tx(res).onceSealed() // Sealed - transaction was executed & verified (went through)
+      setCollection(true)
     } catch (err) {
       console.log(err)
       setLoading(false)
     }
-    setCollection(true)
+    //setCollection(true)
   }
 
   const deleteCollection = async () => {
+    try {
+      let res = await mutate({
+        cadence: DELETE_COLLECTION,
+        limit: 75;
+      });
+      await tx(res).onceSealed()
+      setCollection(false)
+    } catch (err) {
+      console.log(err)
+      setLoading(false)
+    }
     setCollection(false)
     window.location.reload()
   }
