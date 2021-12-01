@@ -1,4 +1,3 @@
-
 import FungibleToken from "./FungibleToken.cdc"
 
 pub contract DappyContract {
@@ -20,15 +19,15 @@ pub contract DappyContract {
     pub let price: UFix64
 
     init(templateID: UInt32, dna: String, name: String) {
-      self.templateID = templateID
+      self.templateID = templateID 
       self.dna = dna
-      self.name = name
+      self.name = name 
       self.price = self._calculatePrice(dna: dna.length)
     }
 
     access(self) fun _calculatePrice(dna: Int): UFix64 {
       if dna >= 31 {
-        return 21.0
+        return 21.0 // Price -> longer the dna, the more rare it is
       } else if dna >= 25 {
         return 14.0
       } else {

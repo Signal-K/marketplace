@@ -45,7 +45,7 @@ export default function useCollection() {
     try {
       let res = await mutate({
         cadence: DELETE_COLLECTION,
-        limit: 75;
+        limit: 75,
       });
       await tx(res).onceSealed()
       setCollection(false)
