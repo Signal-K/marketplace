@@ -21,6 +21,6 @@ export default function Collection() {
           <div className="btn btn-round" onClick={() => deleteCollection()}>Delete Collection</div>
         </>
       }
-    </>
+    </> 
   )
 }
