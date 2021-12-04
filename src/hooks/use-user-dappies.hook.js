@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { userDappyReducer } from '../reducer/userDappyReducer'
 import DappyClass from '../utils/DappyClass'
 import { DEFAULT_DAPPIES } from '../config/dappies.config'
-import { query } from '@onflow/fcl'
+import { mutate, query } from '@onflow/fcl'
 import { LIST_USER_DAPPIES } from '../flow/list-user-dappies.script'
 
 export default function useUserDappies(user, collection, getFUSDBalance) {
@@ -24,10 +24,10 @@ export default function useUserDappies(user, collection, getFUSDBalance) {
 
         for (let key in res) { // for every key in returned object
           const element = res[key]
-          let dappy = new DappyClass(element.templateID, element.dna, element.name, element.price, key)
-          mappedDappies.push(dappy)
+          let dappy = new DappyClass(element.templateID, element.dna, element.name, element.price, key);
+          mappedDappies.push(dappy);
         }
-        console.log(res);
+        //console.log(res);
         dispatch({ type: 'SUCCESS', payload: mappedDappies })
       } catch (err) {
         dispatch({ type: 'ERROR' })
@@ -38,7 +38,25 @@ export default function useUserDappies(user, collection, getFUSDBalance) {
   }, [])
 
   const mintDappy = async (templateID, amount) => {
+    if(!collection) { // If there is no collection assigned to the logged in user i.e. collection doesn't exist
+      alert("You need to enable the collection first. Go to the tab Collection")
+      return
+    }
     try {
+      let res = await mutate({
+        cadence: `
+          import DappyContract from 0xDappy
+          import FUSD from 0xFUSD
+          import FungibleToken from 0xFungibleToken
+
+          transaction(templateID: UInt32, amount: UFix64) { // templateID: id of nft, amount: price of nft, 
+            let receiverRef: &DappyContract.Collection{DappyContract.Receiver} // Receiver of the NFT
+            let sentVault: @FungibleToken.Vault
+
+            prepare(acct: AuthAccount)
+          }
+        `
+      });
       await addDappy(templateID)
     } catch (error) {
       console.log(error)
