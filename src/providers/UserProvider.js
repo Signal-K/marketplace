@@ -11,7 +11,7 @@ export default function UserProvider({ children }) {
   const {user} = useAuth();
   const { collection, createCollection, deleteCollection } = useCollection(user); // For what address the collection is assigned to
   const { data: balance, createFUSDVault, getFUSDBalance } = useFUSD()
-  const { data: userDappies, addDappy, batchAddDappies, mintDappy } = useUserDappies()
+  const { data: userDappies, addDappy, batchAddDappies, mintDappy } = useUserDappies(user, collection, getFUSDBalance);
 
   return (
     <UserContext.Provider

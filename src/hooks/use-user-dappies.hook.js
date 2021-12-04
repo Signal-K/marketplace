@@ -2,8 +2,10 @@ import { useEffect, useReducer } from 'react'
 import { userDappyReducer } from '../reducer/userDappyReducer'
 import DappyClass from '../utils/DappyClass'
 import { DEFAULT_DAPPIES } from '../config/dappies.config'
+import { query } from '@onflow/fcl'
+import { LIST_USER_DAPPIES } from '../flow/list-user-dappies.script'
 
-export default function useUserDappies() {
+export default function useUserDappies(user, collection, getFUSDBalance) {
   const [state, dispatch] = useReducer(userDappyReducer, {
     oading: false,
     error: false,
@@ -14,7 +16,19 @@ export default function useUserDappies() {
     const fetchUserDappies = async () => {
       dispatch({ type: 'PROCESSING' })
       try {
-        dispatch({ type: 'SUCCESS', payload: [] })
+        let res = await query({
+          cadence: LIST_USER_DAPPIES,
+          args: (arg, t) => [arg(user?.addr, t.Address)]
+        });
+        let mappedDappies = []
+
+        for (let key in res) { // for every key in returned object
+          const element = res[key]
+          let dappy = new DappyClass(element.templateID, element.dna, element.name, element.price, key)
+          mappedDappies.push(dappy)
+        }
+        console.log(res);
+        dispatch({ type: 'SUCCESS', payload: mappedDappies })
       } catch (err) {
         dispatch({ type: 'ERROR' })
       }

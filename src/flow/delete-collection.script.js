@@ -1,4 +1,4 @@
-expot const DELETE_COLLECTION = `
+export const DELETE_COLLECTION = `
     import DappyContract from 0xDappy
 
     transaction {
