@@ -4,13 +4,15 @@ import DappyClass from '../utils/DappyClass'
 import { DEFAULT_DAPPIES } from '../config/dappies.config'
 import { mutate, query } from '@onflow/fcl'
 import { LIST_USER_DAPPIES } from '../flow/list-user-dappies.script'
+import { MINT_DAPPY } from '../flow/mint-dappy.tx'
 
 export default function useUserDappies(user, collection, getFUSDBalance) {
   const [state, dispatch] = useReducer(userDappyReducer, {
-    oading: false,
+    loading: false,
     error: false,
     data: []
   })
+  const { addTx, runningTxs } = useTxs()
 
   useEffect(() => {
     const fetchUserDappies = async () => {
@@ -44,20 +46,15 @@ export default function useUserDappies(user, collection, getFUSDBalance) {
     }
     try {
       let res = await mutate({
-        cadence: `
-          import DappyContract from 0xDappy
-          import FUSD from 0xFUSD
-          import FungibleToken from 0xFungibleToken
-
-          transaction(templateID: UInt32, amount: UFix64) { // templateID: id of nft, amount: price of nft, 
-            let receiverRef: &DappyContract.Collection{DappyContract.Receiver} // Receiver of the NFT
-            let sentVault: @FungibleToken.Vault
-
-            prepare(acct: AuthAccount)
-          }
-        `
-      });
+        cadence: MINT_DAPPY,
+        limit: 55,
+        args: (arg, t) => [arg(templateID, t.UInt32), arg(amount, t.UFix64)]
+      })
+      addTx(res)
+      await tx(res).onceSealed()
       await addDappy(templateID)
+      await getFUSDBalance() // Update balance on frontend after buying/minting (adding) nft/dappy
+      //await addDappy(templateID)
     } catch (error) {
       console.log(error)
     }
