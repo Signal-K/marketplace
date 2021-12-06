@@ -30,8 +30,8 @@
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { y: 300 },
-                    debug: false
+                    gravity: { y: 300 }, // gravity strength 300, in the y direction/axis
+                    debug: false // Displays active forces & hitboxes (for e.g.) when activated
                 }
             },
             scene: { // What does the scene contain?
@@ -42,26 +42,61 @@
         };
 
         var game = new Phaser.Game(config);
+
         var platforms;
+        var player;
+        var cursors;
+
+        var jumpHeight = -100;
 
         // Loading assets
         function preload() {
             this.load.image('background', 'assets/graveyard/BG.png');
             this.load.image('ground', 'assets/graveyard/Tiles/Tile (2).png');
+            this.load.image('player', 'assets/graveyard/player.png');
         }
 
         // Setup function (initialising)
         function create() {
+            // Setting background
             this.add.image(400, 300, 'background').setScale(0.55); // Load image at (400,300) (middle of the screen)
+
+            // Creating the platforms
             platforms = this.physics.add.staticGroup(); // Platforms are static (i.e. non-rigidbody in Unity, not affected by gravity)
-            platforms.create(600, 400, 'ground');
-            platforms.create(50, 250, 'ground');
-            platforms.create(750, 220, 'ground');
+            platforms.create(470, 400, 'ground').setScale(0.5).refreshBody();
+            platforms.create(535, 400, 'ground').setScale(0.5).refreshBody(); // Each tile is 65 wide
+            platforms.create(600, 400, 'ground').setScale(0.5).refreshBody(); // Refresh the body so that the hitbox updates to the correct size
+            platforms.create(665, 400, 'ground').setScale(0.5).refreshBody();
+
+            // Creating the player
+            player = this.physics.add.sprite(500, 250, 'player').setScale(0.3).refreshBody();
+            player.setBounce(0.2); // Bounce upon impact (e.g. bounces up slightly after landing from a jump)
+            //player.setColliderWorldBounce(true);
+
+            // Physics configuration
+            this.physics.add.collider(player, platforms); // Players and platforms will now collide together (i.e. player cannot go through platform)
+
+            // Cursor configuration
+            cursors = this.input.keyboard.createCursorKeys();
         }
 
         // 60 times per second (frames) -> Checking for updates every frame
         function update() {
-
+            // Cursor update function / keyboard /// Player input
+            if (cursors.left.isDown) { // Arrow keys on keyboard (input/o)
+                player.setVelocityX(-160); // Move player object to the left
+            }
+            else if (cursors.right.isDown) {
+                player.setVelocityX(160);
+            }
+            else {
+                player.setVelocityX(0);
+                //player.anims.play('turn'); // Demo animation for future ref
+            }
+            // Jump movement
+            if(cursors.up.isDown && player.body.touching.down) {
+                player.setVelocityY(jumpHeight);
+            }
         }
     </script>
 </body>
