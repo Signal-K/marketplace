@@ -21,6 +21,8 @@ Put this in Notion!!!
 
 Custom Moralis skin/ui (duplicating to airtable or some other visual frontend?)
 
+Look at the ways we design the user flow for character vs (multiplayer) competitors and migrate this methodology to Unity
+
 ### Art
 https://www.gameart2d.com/free-graveyard-platformer-tileset.html
 
