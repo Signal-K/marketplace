@@ -41,13 +41,26 @@
             }
         };
 
-        var game = new Phaser.Game(config);
+        var game;
 
         var platforms;
         var player;
         var cursors;
 
         var jumpHeight = -100;
+
+        function launch() {
+            let user = Moralis.User.current();
+            if(!user) {
+                console.log("Please log in with metamask");
+            }
+            else {
+                console.log(user.get("ethAddress")) + " " + "logged in";
+                game = new Phaser.Game(config) // Creates the game when the site loads, and a user is logged in
+            }
+        }
+
+        launch();
 
         // Loading assets
         function preload() {
@@ -57,7 +70,7 @@
         }
 
         // Setup function (initialising)
-        function create() {
+        async function create() {
             // Setting background
             this.add.image(400, 300, 'background').setScale(0.55); // Load image at (400,300) (middle of the screen)
 
@@ -78,6 +91,19 @@
 
             // Cursor configuration
             cursors = this.input.keyboard.createCursorKeys();
+
+            // Player position query (to Moralis db)
+            let query = new Moralis.Query("PlayerLocation");
+            let subscription = await query.subscribe();
+            subscription.on('create', (plocation) => { // When  a new player position is added to the db
+                if(plocation.get("player") != user.get("ethAddress")){
+                    console.log("someone moved");
+                    console.log(plocation.get("player"));
+                    console.log("new x ", plocation.get("x"))
+                    console.log("new y ", plocation.get("y"))
+                }
+                console.log("object created");
+            });
         }
 
         // 60 times per second (frames) -> Checking for updates every frame
@@ -97,7 +123,42 @@
             if(cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(jumpHeight);
             }
+
+            // Writing player position to the Moralis db
+            if(player.lastX!=player.x || player.lastY!=player.y) {
+                let user = Moralis.User.current();
+
+                const PlayerPosition = Moralis.Object.extend("PlayerPosition");
+                const playerPosition = new PlayerPosition();
+
+                playerPosition.set("player",user.get("ethAddress"));
+                playerPosition.set("x",player.x);
+                playerPosition.set("y",player.y);
+
+                player.lastX = player.x;
+                player.lastY = player.y;
+
+                await playerPosition.save();
+            }
         }
+
+        async function login() {
+            let user = Moralis.User.current();
+            if(!user) {
+                user = await Moralis.Web3.authenticate();
+                launch()
+            }
+            console.log("logged in user: ", user);
+        }
+
+        async function logOut() {
+            await Moralis.User.logOut();
+            console.log("logged out user");
+            location.reload(); // Reload the page after the user logs out
+        }
+
+        document.getElementById("btn-login").onclick = login;
+        document.getElementById("btn-logout").onclick = logOut;
     </script>
 </body>
 
