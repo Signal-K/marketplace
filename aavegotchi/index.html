@@ -63,9 +63,14 @@
 
         // Loading assets
         function preload() {
+            that = this;
             this.load.image('background', 'assets/graveyard/BG.png');
             this.load.image('ground', 'assets/graveyard/Tiles/Tile (2).png');
             this.load.image('player', 'assets/graveyard/player.png');
+
+            // Fetching player SVG
+            const numericTraits = [19, 99, 99, 1, 1];
+            const equippedWearables = [23,1,0,43,0,0,0,1,0,0,0,0,0,0,0,0];
         }
 
         // Setup function (initialising)
