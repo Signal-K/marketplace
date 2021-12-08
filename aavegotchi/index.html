@@ -98,9 +98,13 @@
                 if(plocation.get("player") != user.get("ethAddress")){
 
                     // If first time seeing additional players
-                    if(competitors[plocation.get("player")]) {
+                    if(competitors[plocation.get("player")] == undefined) { // Undefined as until now the data structure/variable for this new player was empty/undefined
                         // Create sprite for other characters
-                        competitors[plocation.get("player")] = this.add.image(0, 0, 'player').setScale(0.3);
+                        competitors[plocation.get("player")] = this.add.image(plocation.get("x"), plocation.get('y'), 'player').setScale(0.3);
+                    }
+                    else { // We have seen the same player before
+                        competitors[plocation.get("player")].x = plocation.get('x');
+                        competitors[plocation.get("player")].y = plocation.get("y");
                     }
 
                     console.log("someone moved");
