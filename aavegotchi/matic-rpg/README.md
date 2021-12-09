@@ -1,0 +1,1 @@
+A set of scaffolding for matic/polygon-based rpg elements (which will interact with the rest of the SK/Star-Sailors suite)
