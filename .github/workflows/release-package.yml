@@ -1,23 +1,35 @@
-name: sailorsport
+name: "Deploy"
+
 on:
-  pull_request:
+  release:
+    types:
+      - published
+  push:
     branches:
-      - npm-sp
-  pull_request_target:
+      - dev
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  vercel: 
     runs-on: ubuntu-latest
+    name: "Deploy front-end"
+
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
-        id: vercel-action
+      - uses: actions/setup-node@v1
         with:
-          github-token: ${{ secrets.GITH_TOKEN }}
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          github-comment: false
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_STATIC }}
-      - name: preview-url
+          node-version: '14'
+          registry-url: https://registry.npmjs.org/
+
+      - name: "Deploy to Vercel"
         run: |
-          echo ${{ steps.vercel-action.outputs.preview-url }}
+          prodRun=""
+          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
+            prodRun="--prod"
+          fi
+
+          npx vercel --token ${VERCEL_TOKEN} $prodRun
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
