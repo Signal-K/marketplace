@@ -1,6 +1,6 @@
 {
-  "name": "crypto-dappy",
-  "version": "0.1.0",
+  "name": "sailorsport",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@onflow/fcl": "0.0.77",
@@ -39,5 +39,22 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "Marketplace repository (demo) for Star Sailors assets",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Signal-K/marketplace.git"
+  },
+  "keywords": [
+    "star-sailors",
+    "web3"
+  ],
+  "author": "Gizmotronn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Signal-K/marketplace/issues"
+  },
+  "homepage": "https://github.com/Signal-K/marketplace#readme"
 }
