@@ -1,1 +1,0 @@
-Discussion place (decentralised reddit) that forms part of the Star Sailors webapp suite
