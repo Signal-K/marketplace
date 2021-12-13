@@ -1,0 +1,8 @@
+      - name: Create or Update Project Card
+        uses: peter-evans/create-or-update-project-card@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          project-location: signal-k
+          project-name: ERC20 Token
+          column-name: In Progress
+          issue-number: 1
