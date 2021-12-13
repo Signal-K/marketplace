@@ -56,7 +56,7 @@ contract Decentradit {
         bytes32 _category = postRegistry[_postId].categoryId;
         address _contributor = postRegistry[_postId].postOwner; 
         require(voteRegistry[_voter][_postId] == false, "Sender has already voted in this post");
-        require (validateReputationChange(_voter,_category,_reputationTaken)==true, "This address cannot take this amount of reputation points");
+        require (validateReputationChange(_voter,_category,_reputationTaken)==true, "This address cannot take this amount of reputation points"); // Each post can't go below 0 reputation
         postRegistry[_postId].votes >= 1 ? postRegistry[_postId].votes -= 1: postRegistry[_postId].votes = 0;
         reputationRegistry[_contributor][_category] >= _reputationTaken ? reputationRegistry[_contributor][_category] -= _reputationTaken: reputationRegistry[_contributor][_category] =0;
         voteRegistry[_voter][_postId] = true;
@@ -67,10 +67,10 @@ contract Decentradit {
     function validateReputationChange(address _sender, bytes32 _categoryId, uint8 _reputationAdded) internal view returns (bool _result) {
         uint80 _reputation = reputationRegistry[_sender][_categoryId];
         if (_reputation < 2 ) {
-            _reputationAdded == 1 ? _result = true: _result = false;
+            _reputationAdded == 1 ? _result = true: _result = false; // If the person voting has <2 reputation points, they can only add/take away 1 reputation point
         }
         else {
-            2**_reputationAdded <= _reputation ? _result = true: _result = false;
+            2**_reputationAdded <= _reputation ? _result = true: _result = false; // Amount of reputation you can add/take away is based on logs (power/sqrt of 2s/multiplesOf2)
         }
     }
 
