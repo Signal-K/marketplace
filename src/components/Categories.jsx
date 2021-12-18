@@ -1,5 +1,7 @@
+import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider"
 import { Menu } from "antd";
 import React from "react";
+import glStyles from "./gstyles"
 
 const Categories = ({categories}) => {
     const { setSelectedCategory } = usemoralisDapp();
@@ -12,6 +14,7 @@ const Categories = ({categories}) => {
         <div className="col-lg-3">
             <Menu
             onClick={(e) => selectCategory(e.key)}
+            style={{ ...glstyles.card, padding: "10 px 0"}} // Content of gstyles.js, except a different padding
             mode="inline">
                 <Menu.ItemGroup key="categories" title="Categories">
                     {categories.map((category) => (
