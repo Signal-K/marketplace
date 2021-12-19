@@ -39,8 +39,9 @@ const Feed = () => {
                 <button shape="round" onClick={toggleShowAddPost}>
                     Post
                 </button>
-            </div>
-            <AddPost/>
+            </div> 
+            {showAddPost ? <AddPost/>:""} {/* If true, show AddPost component, otherwise show nothing*/}
+            <h3>Post will go here</h3>
         </div>
         )
     }

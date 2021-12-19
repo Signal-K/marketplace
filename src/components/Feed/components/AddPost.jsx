@@ -1,12 +1,64 @@
+import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider";
+import {useMoralisFile} from "react-moralis"
+import {useWeb3ExecuteFunction} from "react-moralis"
 import { useStat } from "react";
+import {message} from "antd";
 
 const AddPost = () => {
+    const {contractABI, contractAddress, selectedCategory} = useMoralisDapp();
+    const contractABIJson = JSON.parse(contractABI);
+    const ipfsProcessor = useMoralisFile(); // Creating an instance of the ipfs processor // useMoralisFile
+    const contractProcessor = useWeb3ExecuteFunction(); // Creating an instance of useWeb3ExecuteFunction
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 
+    async function addPost(post) {
+        const contentUri = await processsContent(post);
+        const categoryId = selectedCategory["categoryId"]
+        const options = {
+            contractAddress: contractAddress,
+            functionName: "createPost",
+            abi: contractABIJson,
+            params: {
+                _parentId: "0x91",
+                _contentUri: contentUri,
+                _categoryId: categoryId
+            },
+            }
+        await contractProcessor.fetch({params:options,
+            onSuccess: () => message.success("success"),
+            onError: (error) => message.error(error),
+        });
+    }
+
+    const processContent = async (content) => {
+        const ipfsResult = await ipfsProcessor.saveFile(
+            "post.json",
+            { base64: btoa(JSON.stringify(content)) },
+            { safeIPFS: true}
+        )
+        return ipfsResult._ipfs;
+    }
+
+    // Validate that the form has a title, and content (body)
+    const validateForm = () => {
+        let result = !title || !content ? false: true;
+        return result;
+    }
+
+    const clearForm = () =>{
+        setTitle('');
+        setContent('');
+    }
+
     function onSubmit(e){
         e.preventDefault();
-        console.log(title, content);
+        if(!validateForm()) {
+            return message.error("remember to add the title and the content of your post")
+        }
+        //console.log(title, content);
+        addPost({title, content})
+        clearForm();
     }
 
     return (
