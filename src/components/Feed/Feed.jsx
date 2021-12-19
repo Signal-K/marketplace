@@ -1,11 +1,21 @@
 import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider"
-import {Avatar } from "antd"
+import { useState } from "react"
+
+import {Avatar, button } from "antd"
 import glStyles from "components/gstyles"
 import Blockie from "components/Blockie"
+import AddPost from "./AddPost"
 
 const Feed = () => {
     const [setSelectedCategory] = useMoralisDapp();
+    const [showAddPost, setShowAddPost] = useState(false);
+
     let result = null;
+
+    function toggleShowAddPost() {
+        setShowAddPost(!showAddPost);
+    }
+
     if (selectedCategory["category"] === "default") {
         result = (
             <div className="col-lg-9">
@@ -14,17 +24,24 @@ const Feed = () => {
         );
     } else {
         result = (
+        <div className="col-lg-9">
             <div
-            style={{
-                ...glStyles.card,
-                padding: "10px 13px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-            }}
-        >
-            <Avatar src={<Blockie currentWallet />} />
+                style={{
+                    ...glStyles.card,
+                    padding: "10px 13px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
+            >
+                <Avatar src={<Blockie currentWallet />} />
+                <h4> Your reputation in {selectedCategory["category"]} is {""}</h4>
+                <button shape="round" onClick={toggleShowAddPost}>
+                    Post
+                </button>
             </div>
+            <AddPost/>
+        </div>
         )
     }
 
