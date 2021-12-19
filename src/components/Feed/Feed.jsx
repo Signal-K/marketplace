@@ -1,5 +1,6 @@
 import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider"
 import { useState } from "react"
+import Posts from ".components/Posts"
 
 import {Avatar, button } from "antd"
 import glStyles from "components/gstyles"
@@ -42,6 +43,7 @@ const Feed = () => {
             </div> 
             {showAddPost ? <AddPost/>:""} {/* If true, show AddPost component, otherwise show nothing*/}
             <h3>Post will go here</h3>
+            <Posts />
         </div>
         )
     }
