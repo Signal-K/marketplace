@@ -4,7 +4,7 @@ import React from "react";
 import glStyles from "./gstyles"
 
 const Categories = ({categories}) => {
-    const { setSelectedCategory } = usemoralisDapp();
+    const { setSelectedCategory } = useMoralisDapp();
 
     function selectCategory(categoryId) { // Take the categoryId variable as a param/prop for the category that is selected/will be selected
         const setSelectedCategory = categories.filter((category) => category["categoryId"] === categoryId);
@@ -14,7 +14,7 @@ const Categories = ({categories}) => {
         <div className="col-lg-3">
             <Menu
             onClick={(e) => selectCategory(e.key)}
-            style={{ ...glstyles.card, padding: "10 px 0"}} // Content of gstyles.js, except a different padding
+            style={{ ...glStyles.card, padding: "10 px 0"}} // Content of gstyles.js, except a different padding
             mode="inline">
                 <Menu.ItemGroup key="categories" title="Categories">
                     {categories.map((category) => (

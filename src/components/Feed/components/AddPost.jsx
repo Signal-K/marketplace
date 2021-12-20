@@ -1,7 +1,7 @@
 import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider";
 import {useMoralisFile} from "react-moralis"
 import {useWeb3ExecuteFunction} from "react-moralis"
-import { useStat } from "react";
+import { useState } from "react";
 import {message} from "antd";
 
 const AddPost = () => {
@@ -13,7 +13,7 @@ const AddPost = () => {
     const [content, setContent] = useState("");
 
     async function addPost(post) {
-        const contentUri = await processsContent(post);
+        const contentUri = await processContent(post);
         const categoryId = selectedCategory["categoryId"]
         const options = {
             contractAddress: contractAddress,
@@ -86,3 +86,5 @@ const AddPost = () => {
     </form>
     )
 }
+
+export default AddPost

@@ -1,11 +1,11 @@
 import {useMoralisDapp} from "providers/MoralisDappProvider/MoralisDappProvider"
 import { useState } from "react"
-import Posts from ".components/Posts"
+import Posts from "./components/Posts"
 
-import {Avatar, button } from "antd"
+import {Avatar, Button } from "antd"
 import glStyles from "components/gstyles"
 import Blockie from "components/Blockie"
-import AddPost from "./AddPost"
+import AddPost from "./components/AddPost"
 
 const Feed = () => {
     const [setSelectedCategory] = useMoralisDapp();
