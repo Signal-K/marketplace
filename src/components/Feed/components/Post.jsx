@@ -6,16 +6,20 @@ import Text from "antd/lib/typography/Text";
 import Blockie from "components/Blockie";
 import glStyles from "components/gstyles";
 import { LikeFilled } from "@ant-design/icons";
+import Votes from "./Votes"
 
 const Post = ({post}) => {
     const { contentId, postId, postOwner } = post;
-    const { walletAddress} = useMoralisDapp(); // We need to get the wallet address from the MoralisDappProvider to see who is connected to the dapp
     const [postContent, setPostContent] = useState({ title: "default", content: "default" }); // Default values for the postContent object
     const { data } = useMoralisQuery("Contents", (query) => query.equalTo("contentId", contentId));
     const [voteStatus, setVoteStatus] = useState();
     const { data: votes } = useMoralisQuery("Votes", (query) => query.equalTo("postId", postId), [], {
         live: true,
     });
+
+    const { walletAddress, contractABI, contractAddress} = useMoralisDapp(); // We need to get the wallet address from the MoralisDappProvider to see who is connected to the dapp
+    const contractABIJson = JSON.parse(contractABI);
+    const contractProcessor = useWeb3ExecuteFunction();
 
     useEffect(() => {
         function extractUri(data) {
@@ -52,8 +56,25 @@ const Post = ({post}) => {
         getPostVoteStatus();
     }, [votes, walletAddress]);
 
-    function vote(input){
-        message.success("message");
+    async function vote(direction){
+        if (walletAddress.toLowerCase() === postOwner.toLowerCase()) return message.error("You cannot vote on your own posts"); // Detects if user is trying to vote on their own posts, prevents them from doing so with an error message
+        if (voteStatus) return message.error("Already voted"); // Detects the voteStatus of the current user on the current post -> prevents them from voting multiple times on the same post
+
+        const options = {
+            contractAddress: contractAddress,
+            functionName: direction,
+            abi: contractABIJson,
+            params: {
+                _postId: post["postId"],
+                [direction === "voteDown" ? "_reputationTaken" : "_reputationAdded"]: 1, // Net change in reputation is 1 -> if voteDown, then 1 rTaken, if not, 1 rAdded
+            },
+        };
+
+        await contractProcessor.fetch({
+            params: options,
+            onSuccess: () => console.log("success"),
+            onError: (error) => console.error(error),
+        });
     }
 
     //console.log(post)
@@ -67,14 +88,14 @@ const Post = ({post}) => {
                 {createElement(voteStatus === "liked" ? LikeFilled : LikeOutlined)} Vote Up
             </span>
         </Tooltip>,
-        <span style={{ fontSize: "15px" }}>0</span>,
+        <span style={{ fontSize: "15px" }}><Votes postId={postId}/></span>,
         <Tooltip key="comment-basic-dislike" title="Dislike">
             <span
                 style={{ fontSize: "15px", display: "flex", alignItems: "center", marginLeft: "8px" }}
                 onClick={() => vote("voteDown")}
-            >
+                >
                 {createElement(voteStatus === "disliked" ? DislikeFilled : DislikeOutlined)} Vote Down
-            </span>
+                </span>
         </Tooltip>,
     ];
 
