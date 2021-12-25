@@ -1,3 +1,6 @@
 [submodule "moralis-unity"]
 	path = moralis-unity
 	url = keybase://team/signalkinetics.unity/moralis
+[submodule "marketplace-games/web3-test-game"]
+	path = marketplace-games/web3-test-game
+	url = keybase://team/signalkinetics.unity/web3-test-game
