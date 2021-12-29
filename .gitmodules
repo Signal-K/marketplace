@@ -4,3 +4,6 @@
 [submodule "marketplace-games/web3-test-game"]
 	path = marketplace-games/web3-test-game
 	url = keybase://team/signalkinetics.unity/web3-test-game
+[submodule "marketplace-games/--force"]
+	path = marketplace-games/--force
+	url = keybase://team/signalkinetics.unity/web3-test-game-react
