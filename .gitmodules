@@ -11,3 +11,6 @@
 [submodule "marketplace-games/moralis-unity"]
 	path = marketplace-games/moralis-unity
 	url = keybase://team/signalkinetics.unity/moralis
+[submodule "mainchain/moralis-opensea"]
+	path = mainchain/moralis-opensea
+	url = keybase://team/signalkinetics.hack/moralis-opensea
