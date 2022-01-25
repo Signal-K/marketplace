@@ -14,3 +14,6 @@
 [submodule "mainchain/moralis-opensea"]
 	path = mainchain/moralis-opensea
 	url = keybase://team/signalkinetics.hack/moralis-opensea
+[submodule "dashboards/avalanche-db"]
+	path = dashboards/avalanche-db
+	url = keybase://team/signalkinetics.templates/avalanche-db
