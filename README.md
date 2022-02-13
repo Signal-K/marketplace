@@ -30,6 +30,11 @@ These requirements are for the node/react components of this sample NFT project
 
 Use either `yarn install` or `npm install` to install all the required node packages.
 
+With `hardhat` -> Run commands with `--verbose` at the end
+
+## Minting the NFTs
+`npx hardhat run scripts/deploy.js --network rinkeby --verbose`
+
 
 ## 🚀 Technologies Used
 

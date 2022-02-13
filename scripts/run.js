@@ -8,7 +8,11 @@ const main = async () => {
         "https://i.imgur.com/xVu4vFL.png", 
         "https://i.imgur.com/WMB6g9u.png"],
         [100, 200, 300], // HP Values
-        [100, 50, 25] // Attack damage values
+        [100, 50, 25], // Attack damage values
+        "Scroobus", // Boss name
+        "https://i.imgur.com/AksR0tt.png", // Boss image
+        10000, // Boss HP
+        500 // Boss attack damage
     ); // Hardhat creates a local Eth network just for this contract with refresh for every deploy
     await gameContract.deployed(); // Wait until the contract is mined & deployed to the (current) local blockchain
     console.log("Contract deployed to:", gameContract.address);
