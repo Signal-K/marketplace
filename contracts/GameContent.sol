@@ -45,6 +45,14 @@ contract GameContent is ERC721 {
     // Mapping from an address => tokenId
     mapping(address => uint256) public nftHolders;
 
+    // Event/webhook to see if the NFT was correctly minted
+    event CharacterNFTMinted(
+        address sender,
+        uint256 tokenId,
+        uint256 characterIndex
+    );
+    event AttackComplete(uint256 newBossHp, uint256 newPlayerHp);
+
     // Values passed in from scripts/run.js
     constructor(
         string[] memory characterNames,
@@ -126,6 +134,9 @@ contract GameContent is ERC721 {
 
         // Increment tokenId for the next call
         _tokenIds.increment();
+
+        // Catch the event (i.e. webhook/api EVENT)
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     function tokenURI(uint256 _tokenId)
@@ -167,5 +178,37 @@ contract GameContent is ERC721 {
         );
 
         return output;
+    }
+
+    // Check if a user has a CharacterNFT given to them, and then retrieve THEIR NFT's attributes
+    function checkIfUserHasNFT()
+        public
+        view
+        returns (CharacterAttributes memory)
+    {
+        // Get the tokenId of the user's character NFT
+        uint256 userNftTokenId = nftHolders[msg.sender];
+        // If the user has a tokenId in the map, return their character
+        if (userNftTokenId > 0) {
+            return nftHolderAttributes[userNftTokenId];
+        }
+        // Else return empty character
+        else {
+            CharacterAttributes memory emptyStruct;
+            return emptyStruct;
+        }
+    }
+
+    // Get characters
+    function getAllDefaultCharacters()
+        public
+        view
+        returns (CharacterAttributes[] memory)
+    {
+        return defaultCharacters;
+    }
+
+    function getBoss() public view returns (Boss memory) {
+        return bossCharacter;
     }
 }
