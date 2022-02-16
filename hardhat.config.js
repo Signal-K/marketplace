@@ -20,8 +20,8 @@ module.exports = {
   solidity: '0.8.1',
   networks: {
     rinkeby: {
-      url: 'env.alchemy',
-      accounts: ['env.rinkeby'],
+      url: process.env.ALCHEMY, // Alchemy Rinkeby URL
+      accounts: [process.env.PRIVATE], // This is the private key of the account (rinkeby)
     },
   },
 };
