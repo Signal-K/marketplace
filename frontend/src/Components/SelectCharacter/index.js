@@ -8,6 +8,19 @@ const SelectCharacter = ({ setCharacterNFT }) => {
     const [characters, setCharacters] = useState([]);
     const [gameContract, setGameContract] = useState(null);
 
+    const mintCharacterNFTAction = (characterId) => async () => {
+        try {
+            if (gameContract) {
+                console.log('Minting character in progress...');
+                const mintTxn = await gameContract.mintCharacterNFT(characterId);
+                await mintTxn.wait();
+                console.log('mintTxn:', mintTxn);
+            }
+        } catch (error) {
+            console.warn('MintCharacterAction Error:', error);
+        }
+    }
+
     // Display mintable characters
     useEffect(() => {
         const { ethereum } = window;
@@ -50,15 +63,38 @@ const SelectCharacter = ({ setCharacterNFT }) => {
             }
         };
 
+        const onCharacterMint = async (sender, tokenId, characterIndex) => { // Called whenever a new character NFT is minted
+            console.log(
+                `CharacterNFTMinted - sender: ${sender} tokenId: ${tokenId.toNumber()} characterIndex: ${characterIndex.toNumber()}`
+            );
+
+            // Once the character NFT is minted, we can fetch the metadata from the contract and set it in state to move onto the Arena (game scene)
+            if (gameContract) {
+                const characterNFT = await gameContract.checkIfUserHasNFT();
+                console.log('Character NFT: ', characterNFT);
+                setCharacterNFT(transformCharacterData(characterNFT));
+            }
+        };
+
         // Get the characters
         if (gameContract) {
             getCharacters();
+
+            // Set up NFT Minted listener
+            gameContract.on('CharacterNFTMinted', onCharacterMint);
         }
+
+        return () => {
+            // When the component unmounts, clean up this listener
+            if (gameContract) {
+                gameContract.off('CharacterNFTMinted', onCharacterMint);
+            }
+        };
     }, [gameContract]);
 
-    // Render Methods
+    // Render MethodsComp
     const renderCharacters = () => {
-        characters.map((characters, index) => (
+        characters.map((character, index) => (
             <div className="characters-item" key={characters.name}>
                 <div className="name-container">
                     <p>{characters.name}</p>
