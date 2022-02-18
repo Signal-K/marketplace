@@ -4,13 +4,13 @@ const main = async () => {
     const gameContractFactory = await hre.ethers.getContractFactory("GameContent"); // Compiles the contract
     const gameContract = await gameContractFactory.deploy(
         ["Scrooby", "Gizmo", "Elsie"], // Names
-        ["https://i.imgur.com/pKd5Sdk.png", // Images
-        "https://i.imgur.com/xVu4vFL.png", 
-        "https://i.imgur.com/WMB6g9u.png"],
+        ["https://www.pinclipart.com/picdir/middle/85-850316_r2-d2-icon-r2d2-icon-clipart.png", // Images
+            "https://static.thenounproject.com/png/318368-200.png",
+            "https://www.clipartmax.com/png/middle/31-312830_bb8-vector-google-search-star-wars-bb8-birthday-card.png"],
         [100, 200, 300], // HP Values
         [100, 50, 25], // Attack damage values
         "Scroobus", // Boss name
-        "https://i.imgur.com/AksR0tt.png", // Boss image
+        "https://w7.pngwing.com/pngs/759/987/png-transparent-php-computer-icons-web-development-logo-icon-text-trademark-logo.png", // Boss image
         10000, // Boss HP
         500 // Boss attack damage
     ); // Hardhat creates a local Eth network just for this contract with refresh for every deploy

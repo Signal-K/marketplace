@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
+import LoadingIndicator from './Components/LoadingIndicator';
 
 // Smart contract component imports
 import SelectCharacter from './Components/SelectCharacter';
@@ -81,6 +82,8 @@ const App = () => {
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // Actions
   const checkIfWalletIsConnected = async () => {
     try {
@@ -107,8 +110,41 @@ const App = () => {
     }
   };
 
+  // Render -> if user is connected AND does not have a character NFT, show SelectCharacter component
+  useEffect(() => {
+    const fetchNFTMetadata = async () => {
+      console.log('Checking for Character NFT on address:', currentAccount);
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum); // component that talks to the ethereum nodes
+      const signer = provider.getSigner();
+      const gameContract = new ethers.Contract( // Contract object -> creates connection to the contract
+        CONTRACT_ADDRESS,
+        GameContent.abi,
+        signer
+      );
+
+      const txn = await gameContract.checkIfUserHasNFT();
+      if (txn.name) {
+        console.log('User has character NFT');
+        setCharacterNFT(transformCharacterData(txn));
+      } else {
+        console.log('User does not have character NFT');
+      }
+    };
+
+    // Only run this if the user is connected
+    if (currentAccount) {
+      console.log('Checking for Character NFT on address:', currentAccount);
+      fetchNFTMetadata();
+    }
+  }, [currentAccount]); // Fire this useEffect only when currentAccount changes
+
   // Rendering dynamic user content to the frontend
   const renderContent = () => {
+    console.log(currentAccount, " - ", characterNFT);
+    if (currentAccount && isLoading) {
+      return <LoadingIndicator />;
+    }
     // If user isn't signed in
     if (!currentAccount) {
       return (
@@ -154,20 +190,6 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    checkIfWalletIsConnected();
-
-    const checkNetwork = async () => {
-      try {
-        if (window.ethereum.networkVersion !== '4') {
-          alert('Please switch to the Rinkeby test network');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }, []);
-
   // Render -> if user is connected AND does not have a character NFT, show SelectCharacter component
   useEffect(() => {
     const fetchNFTMetadata = async () => {
@@ -196,6 +218,20 @@ const App = () => {
       fetchNFTMetadata();
     }
   }, [currentAccount]); // Fire this useEffect only when currentAccount changes
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+
+    const checkNetwork = async () => {
+      try {
+        if (window.ethereum.networkVersion !== '4') {
+          alert('Please switch to the Rinkeby test network');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
 
   return (
     <div className="App">
