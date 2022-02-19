@@ -7,6 +7,7 @@ import LoadingIndicator from './Components/LoadingIndicator';
 import SelectCharacter from './Components/SelectCharacter';
 import { CONTRACT_ADDRESS, transformCharacterData } from './constants';
 import GameContent from './utils/GameContent.json';
+import Arena from './Components/Arena';
 // Eth -> JS imports
 import { ethers } from 'ethers';
 
@@ -158,6 +159,8 @@ const App = () => {
       // If user is connected and does not have a character NFT - show SelectCharacter component
     } else if (currentAccount && !characterNFT) {
       return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
+    } else if (currentAccount && characterNFT) { // If user is connected and has a character NFT - show Arena component
+      return <Arena characterNFT={characterNFT} setCharacterNFT={setCharacterNFT} />;
     }
   };
 

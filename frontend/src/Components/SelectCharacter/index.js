@@ -56,6 +56,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
                 const mintTxn = await gameContract.mintCharacterNFT(characterId);
                 await mintTxn.wait();
                 console.log('mintTxn:', mintTxn);
+                //alert(`Your NFT has minted - see it here: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`);
                 // hides loading indicator when done with Action
                 setMintingCharacter(false);
             }
@@ -109,7 +110,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
 
     return (
         <div className="select-character-container">
-            <h2>Mint Your Hero. Save El Barrio.</h2>
+            <h2>Mint Your Hero.</h2>
             {characters.length > 0 && (
                 <div className="character-grid">{renderCharacters()}</div>
             )}
