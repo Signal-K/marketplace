@@ -35,6 +35,7 @@ With `hardhat` -> Run commands with `--verbose` at the end
 ## Minting the NFTs
 `npx hardhat run scripts/deploy.js --network rinkeby --verbose`
 
+* Go [here](https://github.com/Signal-K/marketplace/settings/environments/407186579/edit) for the environment variables
 
 ## 🚀 Technologies Used
 

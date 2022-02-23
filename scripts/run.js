@@ -4,9 +4,9 @@ const main = async () => {
     const gameContractFactory = await hre.ethers.getContractFactory("GameContent"); // Compiles the contract
     const gameContract = await gameContractFactory.deploy(
         ["Scrooby", "Gizmo", "Elsie"], // Names
-        ["https://i.imgur.com/pKd5Sdk.png", // Images
-        "https://i.imgur.com/xVu4vFL.png", 
-        "https://i.imgur.com/WMB6g9u.png"],
+        ["QmU8So2HJnM9sfj7puaY3DqV3nKFT9jeDC9U1vYjrNQdvD", // Images CID on IPFS (pinata.cloud)
+            "https://i.imgur.com/xVu4vFL.png",
+            "https://i.imgur.com/WMB6g9u.png"],
         [100, 200, 300], // HP Values
         [100, 50, 25], // Attack damage values
         "Scroobus", // Boss name
