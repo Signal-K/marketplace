@@ -24,7 +24,7 @@ Note: `game` branch
 
 NodeJS v16.1
 Ganache CLI
-
+c
 ### 🦠 Node Requirements
 These requirements are for the node/react components of this sample NFT project
 
@@ -36,6 +36,7 @@ With `hardhat` -> Run commands with `--verbose` at the end
 `npx hardhat run scripts/deploy.js --network rinkeby --verbose`
 
 * Go [here](https://github.com/Signal-K/marketplace/settings/environments/407186579/edit) for the environment variables
+* [Pinmanager](https://app.pinata.cloud/pinmanager)
 
 ## 🚀 Technologies Used
 
