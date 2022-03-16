@@ -26,3 +26,12 @@ dappyaccount.json
 dappykeys.json
 userkeys.json
 useraccount.json
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+#Hardhat files
+cache
+artifacts
