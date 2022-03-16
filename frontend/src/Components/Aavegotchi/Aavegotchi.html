@@ -34,6 +34,38 @@
 
         document.getElementById("btn-login").onclick = login;
         document.getElementById("btn-logout").onclick = logOut;
+
+        // Phaser configuration
+        var config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            scene: {
+                preload: preload,
+                create: create,
+                update: update,
+            }
+        };
+
+        // Start game with above Phaser configuration
+        var game = new Phaser.Game(config);
+
+        function preload() {
+
+        }
+
+        function create() {
+
+        }
+
+        // Called -> updated 60 times per seconds (frames -> equivalent to Unity's Time.deltaTime). AKA the Game Loop
+        function uodate() {
+
+        }
+
+        // Add Unity WebGL integration here
+        // Console integration, React/node components
+
     </script>
 </body>
 
