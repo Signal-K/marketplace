@@ -1,23 +1,12 @@
-<html>
+<div>
+  <title>Aavegotchi & SK Boilerplate</title>
+  <button id="btn-login">Moralis Login</button>
+  <button id="btn-logout">Logout</button>
+  <br /><br />
+</div>
 
-<head>
-    <title>Aavegotchi Boilerplate for Signal Kinetics</title>
-
-    <!--Get to work with web3 -> thirdweb.com-->
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    <script src="https://npmcdn.com/moralis@0.0.6/dist/moralis.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-</head>
-
-<body>
-    <button id="btn-login">Moralis Login</button>
-    <button id="" btn-logout">Moralis logout</button>
-
-    <br>
-    <br>
-
-    <script>
-        // Connect to Moralis server
+<script>
+// Connect to Moralis server
         Moralis.initialize("https://api.moralis.com/api/v1/", "YOUR_API_KEY");
         Moralis.serverURL = "";
 
@@ -177,7 +166,4 @@
         // Console integration, React/node components
         // Can we use this for loading Unity scenes ^^^^
 
-    </script>
-</body>
-
-</html>
+</script>
