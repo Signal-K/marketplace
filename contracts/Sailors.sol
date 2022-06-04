@@ -56,11 +56,23 @@ contract SailorsDAO {
         bool passed
     );
 
+    // Check if the user is eligible to vote on a proposal
     function checkProposalEligibility(address _proposalist) private view returns (
         bool
     ){
         for(uint i = 0; i < validTokens.length; i++) {
             if (daoContract.balanceOf(_proposalist, validTokens[i]) >= 1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkVoteEligibility(uint256 _id, address _voter) private view returns (
+        bool
+    ) {
+        for (uint256 i = 0; i < Proposals[_id].canVote.length; i++) {
+            if (Proposals[_id].canVote[i] == _voter) {
                 return true;
             }
         }
