@@ -16,7 +16,7 @@ contract Sailors { // SailorsDAO
     constructor() {
         owner = msg.sender;
         nextProposal = 1;
-        daoContract = IdaoContract(0x67a8fe17db4d441f96f26094677763a2213a3b5f);
+        daoContract = IdaoContract(0x67A8fE17Db4d441f96f26094677763a2213a3B5f);
         validTokens = [72764254490465410872480155950423590290196157005391788272990870059575402299393]; // token id of the nft in the contract/collection
     }
 

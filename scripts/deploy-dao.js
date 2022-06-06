@@ -2,7 +2,7 @@ const hre = require("hardhat");
 
 async function main() {
   const Sailors = await hre.ethers.getContractFactory("Sailors");
-  const sailors = await Sailors.deploy("Hello, Hardhat!");
+  const sailors = await Sailors.deploy();
 
   await sailors.deployed();
 

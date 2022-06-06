@@ -28,7 +28,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     },
   },
   etherscan: {
-    apiKey: ["QQWZ6TKJZVXCBDVHUYG5PMZH2EDZ2PN455"] 
+    apiKey: {
+      polygonMumbai: "QQWZ6TKJZVXCBDVHUYG5PMZH2EDZ2PN455"
+    }
   }
 };
 
