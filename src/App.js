@@ -7,7 +7,7 @@ import Proposal from "./pages/Proposal";
 const App = () => {
   return (
     <>
-      <Routes>
+      <Routes> {/* Route this to signal-k/magic */}
         <Route path="/" element={<Home />} />
         <Route path="/proposal" element={<Proposal />} />
       </Routes>
