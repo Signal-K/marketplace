@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./pages.css";
-import './content.css'
 import { TabList, Tab, Widget, Tag, Table, Form } from "web3uikit";
 import { Link } from 'react-router-dom';
 import { useMoralis } from "react-moralis";
-
 
 const Home = () => {
   const [passRate, setPassRate] = useState(0);
   const [totalP, setTotalP] = useState(0);
   const [counted, setCounted] = useState(0);
   const { Moralis, isInitialised } = useMoralis();
-  const [proposals, setProposals] = useState([]);
+  const [proposals, setProposals] = useState();
 
   async function getStatus(proposalId) {
     const ProposalCounts  = Moralis.Object.extend("ProposalCounts"); // query the "ProposalCounts" table on Moralis and assign its values to a temporary variable
@@ -33,7 +31,51 @@ const Home = () => {
   // Update this whenever Moralis is initialised/when ifInitailized is updated/changed. This allows us to retrieve new proposals that have been added to the DB
   useEffect(() => {
     if (isInitialised) {
+      async function getProposals() {
+        const Proposals = Moralis.Object.extend("Proposals");
+        const query = new Moralis.Query(Proposals);
+        query.descending("uid_decimal");
+        const results = await query.find();
+        const table = await Promise.all(
+          results.map(async (e) => [
+            e.attributes.uid,
+            e.attributes.description,
+            <Link to="/proposal" state={{
+              description: e.attributes.description,
+              color: (await getStatus(e.attributes.uid)).color,
+              text: (await getStatus(e.attributes.uid)).text,
+              id: e.attributes.uid,
+              proposer: e.attributes.proposer
+            }}>
+              <Tag
+                color={(await getStatus(e.attributes.uid)).color}
+                text={(await getStatus(e.attributes.uid)).text}
+              />
+            </Link>,
+          ])
+        );
+        //setProposals(table);
+        //setTotalP(results.length); // The number of proposals (totalP) is just how many results are returned in the table
+      }
 
+      /*async function getPassRate() {
+        const ProposalCounts = Moralis.Object.extend("ProposalCounts");
+        const query = new Moralis.Query(ProposalCounts);
+        const results = await query.find();
+        let votesUp = 0;
+
+        results.forEach((e) => {
+          if (e.attributes.passed) {
+            votesUp++;
+          }
+        });
+
+        setCounted(results.length);
+        setPassRate((votesUp / results.length) * 100);
+      }*/
+
+      //getProposals();
+      //getPassRate();
     }
   }, [isInitialised]);
 
@@ -41,7 +83,8 @@ const Home = () => {
     <>
       <div className="content">
         <TabList defaultActiveKey={1} tabStyle="bulbUnion">
-          <Tab tabKey={1} tabName="DAO">
+          <Tab tabKey={1} tabName="DAO"> {/* Make sure that proposals are defined before rendering the rest of the DAO */}
+          
             <div className="tabContent">
               Governance Overview
               <div className="widgets">
@@ -100,16 +143,10 @@ const Home = () => {
                 title="Create a new Proposal"
               />
             </div>
+            
           </Tab>
-          <Tab tabKey={2} tabName="Forum"></Tab> {/* Minimal/lightweight alternatives to something like Flarum */} 
-          <Tab tabKey={3} tabName="Docs">
-              <div className="tabContent">
-                Documentation
-                <div className="landing">
-                  <h1>DAO</h1> {/* Let's add an internal DAO section using thirdweb for dev team members. Right now I'm starting to add components from the frontend of signal-k/theclub (on github) */}
-                </div>
-              </div>
-          </Tab>
+          <Tab tabKey={2} tabName="Forum"></Tab> {/* Minimal/lightweight alternatives to something like Flarum -> Create extra tabs in proposals for comments, link to Discord*/} 
+          <Tab tabKey={3} tabName="Docs"></Tab>
         </TabList>
       </div>
       <div className="voting"></div>

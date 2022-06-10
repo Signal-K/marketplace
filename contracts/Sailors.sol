@@ -1,8 +1,10 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+/* Code: https://mumbai.polygonscan.com/address/0x418805aed44e7105eeec35289fe4d60acfa733af#code */
+pragma solidity ^0.8.4; // updated from ^0.8.0 -> make sure to update hardhat config
+
+import "hardhat/console.sol";
 
 // Star Sailors (Astroanuts) DAO Contract for skinetics.tech
-
 interface IdaoContract {
     function balanceOf(address, uint256) external view returns (uint256);
 }
@@ -136,4 +138,43 @@ contract Sailors { // SailorsDAO
 
         validTokens.push(_tokenId);
     }
+
+    // Beginning of commenting struct/contract component
+    struct Comment {
+        uint32 id;
+        string topic;
+        address creator_address;
+        string message;
+        uint256 created_at;
+    }
+
+    // create event to add data when a comment is added
+    event CommentAdded(Comment comment);
+
+    // Store each topic/post with its array of associated comments
+    mapping(string => Comment[]) private commentsByTopic;
+
+    // Implement getComments test & Fetch a list of comments for a topic/post
+    function getComments(string calldata topic) public view returns(Comment[] memory) {
+        return commentsByTopic[topic];
+    }
+
+    // Data struct for adding comments
+    uint32 private idCounter;
+
+    // Persist/push a new comment
+    function addComment(string calldata topic, string calldata message) public {
+        Comment memory comment = Comment({
+            id: idCounter,
+            topic: topic,
+            creator_address: msg.sender,
+            message: message,
+            created_at: block.timestamp
+        });
+        commentsByTopic[topic].push(comment);
+        idCounter++;
+        emit CommentAdded(comment);
+    }
 }
+
+// Comments - maybe just try and do inheritance/importing? -> event for spacetraders api later
