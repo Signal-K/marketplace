@@ -177,4 +177,4 @@ contract Sailors { // SailorsDAO
     }
 }
 
-// Comments - maybe just try and do inheritance/importing? -> event for spacetraders api later
+// Comments - maybe just try and do inheritance/importing? -> event for spacetraders api later. We want to allow users at all parts of the DAO to make comments on each proposal. Also -> send each new proposal to the main chat server (like Discord or Discourse)
