@@ -13,8 +13,56 @@ const Home = () => {
   const [passRate, setPassRate] = useState(0);
   const [totalP, setTotalP] = useState(0);
   const [counted, setCounted] = useState(0);
+  const [voters, setVoters] = useState(0);
   const {Moralis, isInitialized} = useMoralis();
   const [proposals, setProposals] = useState();
+  const Web3Api = useMoralisWeb3Api();
+  const [sub, setSub] = useState();
+  const contractProcessor = useWeb3ExecuteFunction();
+
+  // ALlow users to create a proposal on the frontend
+  async function createProposal(newProposal) {
+    let options = {
+      contractAddress: "0x418805AEd44E7105EEEC35289Fe4D60Acfa733aF",
+      functionName: "createProposal", // Function from the contract that is being used here -> these functions can be found on https://mumbai.polygonscan.com/address/0x418805AEd44E7105EEEC35289Fe4D60Acfa733aF#code
+      abi: [
+        {
+          inputs: [
+            { // What is the proposal the user wants to create?
+              internalType: "string",
+              name: "_description",
+              type: "string",
+            },
+            { // Which addresses that are part of the DAO are allowed to vote on this proposal?
+              internalType: "address[]",
+              name: "_canVote",
+              type: "address[]",
+            },
+          ],
+          name: "createProposal",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      params: {
+        _description: newProposal,
+        _canVote: voters,
+      },
+    };
+
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        console.log("Proposal Successful")
+        setSub(false);
+      },
+      onError: (error) => {
+        alert(error.data.message);
+        setSub(false);
+      },
+    });
+  }
 
   async function getStatus(proposalId) {
     const ProposalCounts = Moralis.Object.extend("ProposalCounts"); // query the "ProposalCounts" table on Moralis and assign its values to a temporary variable
@@ -79,6 +127,20 @@ const Home = () => {
         setCounted(results.length);
         setPassRate((votesUp / results.length) * 100);
       }
+
+      const fetchTokenIdOwners = async () => { // Later -> create a function that only allows members to vote if they have a specific NFT and attach it to a @thirdweb-dev/react token derivative. Also look into a minting page like gizmotronn/mint on github
+        const options = { // Look at the Polygon Mumbai testnet for the NFT
+          address: "0x67A8fE17Db4d441f96f26094677763a2213a3B5f", // Address of the NFT -> from Sailors.sol smart contract (address 0x418805AEd44E7105EEEC35289Fe4D60Acfa733aF)
+          token_id:
+            "72764254490465410872480155950423590290196157005391788272990870059575402299393", // Demo NFT made with Rarible mumbai for SK -> check .env
+          chain: "mumbai",
+        };
+        const tokenIdOwners = await Web3Api.token.getTokenIdOwners(options); // Get all the users who have that NFT in their wallet -> wallets
+        const addresses = tokenIdOwners.result.map((e) => e.owner_of); // assign that list to variable `addresses` -> get the addresses of each owner mapped out of `getTokenIdOwners` function
+        setVoters(addresses);
+      }
+
+      fetchTokenIdOwners();
       getProposals();
       getPassRate();
     }
@@ -109,7 +171,7 @@ const Home = () => {
                     </div>
                   </div>
                 </Widget>
-                <Widget info={423} title="Eligible Voters" />
+                <Widget info={voters.length} title="Eligible Voters" />
                 <Widget info={totalP-counted} title="Ongoing Proposals" />
               </div>
               Recent Proposals
@@ -127,7 +189,7 @@ const Home = () => {
               </div>
               <Form
                 buttonConfig={{
-                  isLoading: false,
+                  isLoading: sub,
                   loadingText: "Submitting Proposal",
                   text: "Submit",
                   theme: 'secondary',
@@ -144,7 +206,8 @@ const Home = () => {
                   },
                 ]}
                 onSubmit={(e) => {
-                  alert("Proposal Submitted")
+                  setSub(true);
+                  createProposal
                 }}
                 title="Create a new Proposal"
               />
