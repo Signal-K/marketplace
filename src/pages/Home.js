@@ -207,7 +207,7 @@ const Home = () => {
                 ]}
                 onSubmit={(e) => {
                   setSub(true);
-                  createProposal
+                  createProposal(e.data[0].inputResult); // Data from the form (inputted by end user) is sent to the contract to create a new proposal
                 }}
                 title="Create a new Proposal"
               />

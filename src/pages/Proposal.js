@@ -3,7 +3,7 @@ import "./pages.css";
 import { Tag, Widget, Blockie, Tooltip, Icon, Form, Table } from "web3uikit";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 
 const Proposal = () => {
   const { state: proposalDetails } = useLocation(); // Determines the context that is shown on page /proposal -> all the content is dependant on what proposal is selected on /home.js
@@ -11,7 +11,9 @@ const Proposal = () => {
   const [ latestVote, setLatestVote ] = useState();
   const [ percUp, setPercUp ] = useState(0); // A percentage of how many votes on the proposal are "upvotes" i.e. in favour of the proposal
   const [ percDown, setPercDown ] = useState(0);
-  const [votes, setVotes] = useState([]);
+  const [ votes, setVotes ] = useState([]);
+  const [ sub, setSub ] = useState();
+  const contractProcessor = useWeb3ExecuteFunction();
 
   // Query Moralis DB
   useEffect(() => {
@@ -58,6 +60,50 @@ const Proposal = () => {
       getVotes();
     }
   }, [isInitialized]);
+
+  // Function to allow the user to vote on the proposal in state
+  async function castVote(upDown) {
+    let options = {
+      contractAddress: "0x418805AEd44E7105EEEC35289Fe4D60Acfa733aF",
+      functionName: "voteOnProposal",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_id",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "_vote",
+              type: "bool",
+            },
+          ],
+          name: "voteOnProposal",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      params: {
+        _id: proposalDetails.id,
+        _vote: upDown, // Whatever is cast in this function is set to the vote from the end user (defined here)
+      },
+    };
+
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: () => {
+        console.log("Vote cast successfully!");
+        setSub(false);
+      },
+      onError: (error) => {
+        alert(error.data.message);
+        setSub(false);
+      },
+    });
+  }
 
   return (
     <>
@@ -115,13 +161,14 @@ const Proposal = () => {
             pageSize={5}
           />
           <Form
+            isDisabled={proposalDetails.text !== "Ongoing"} // If the proposal is no longer active, the form for users to vote should be hidden from state
             style={{
               width: "35%",
               height: "250px",
               border: "1px solid rgba(6, 158, 252, 0.2)",
             }}
             buttonConfig={{
-              isLoading: false,
+              isLoading: sub,
               loadingText: "Casting Vote",
               text: "Vote",
               theme: "secondary",
@@ -138,7 +185,12 @@ const Proposal = () => {
               },
             ]}
             onSubmit={(e) => {
-              alert("Vote cast!");
+              if (e.data[0].inputResult[0] === "For") {
+                castVote(true);
+              } else {
+                castVote(false);
+              }
+              setSub(true);
             }}
             title="Cast Vote"
           />
