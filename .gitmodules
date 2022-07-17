@@ -17,3 +17,6 @@
 [submodule "dashboards/avalanche-db"]
 	path = dashboards/avalanche-db
 	url = keybase://team/signalkinetics.templates/avalanche-db
+[submodule "cadence"]
+	path = cadence
+	url = https://github.com/gizmotronn/cadence
