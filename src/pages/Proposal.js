@@ -15,51 +15,6 @@ const Proposal = () => {
   const [ sub, setSub ] = useState();
   const contractProcessor = useWeb3ExecuteFunction();
 
-  // Create comments on the specific proposal
-  async function createCommentOnProposal() {
-    let options = {
-      contractAddress: "0x418805AEd44E7105EEEC35289Fe4D60Acfa733aF",
-      functionName: 'createCommentOnProposal',
-      abi: [
-        {
-          inputs: [
-            {
-              // Content of the comment the user wants to add
-              internalType: 'string',
-              name: "_description",
-              type: "string",
-            },
-            {// Which addresses that are part of the DAO are allowed to vote on this proposal?
-              internalType: "address[]",
-              name: "_canVote",
-              type: "address[]",
-            },
-          ],
-          name: "createCommentOnProposal",
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: "function",
-        },
-      ],
-      params: {
-        _description: newComment,
-        _canVote: voters,
-      },
-    };
-
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: () => {
-        console.log("Comment successful")
-        setSub(false);
-      },
-      onError: (error) => {
-        onError(error.data.message);
-        setSub(false);
-      },
-    });
-  }
-
   // Query Moralis DB
   useEffect(() => {
     if (isInitialized) {
@@ -240,30 +195,6 @@ const Proposal = () => {
             title="Cast Vote"
           />
         </div>
-        <Form
-          buttonConfig={{
-            isLoading: sub,
-            loadingText: 'Submitting comment',
-            text: "Submit",
-            theme: 'secondary',
-          }}
-          data={[
-            {
-              inputWidth: "100%",
-                name: "New Comment",
-                type: "textarea",
-                validation: {
-                  required: true,
-                },
-                value: "",
-            }
-          ]}
-          onSubmit={(e) => {
-            setSub(true);
-            createCommentOnProposal(e.data[0].inputResult);
-          }}
-          title="Create a new comment on this proposal"
-        />
      </div>
      <div className="voting"></div>
     </>

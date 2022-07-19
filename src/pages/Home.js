@@ -151,8 +151,11 @@ const Home = () => {
     <>
       <div className="content">
         <TabList defaultActiveKey={1} tabStyle="bulbUnion">
-          <Tab tabKey={1} tabName="DAO">
-            {proposals && ( /* Only render the Proposals table if the proposals state variable is available and working */
+          <Tab tabKey={1} tabName="Forum">
+            
+          </Tab>
+          <Tab tabKey={2} tabName="DAO">
+          {proposals && ( /* Only render the Proposals table if the proposals state variable is available and working */
             <div className="tabContent">
               Governance Overview
               <div className="widgets">
@@ -212,9 +215,8 @@ const Home = () => {
                 title="Create a new Proposal"
               />
             </div>
-            )}
-          </Tab>
-          <Tab tabKey={2} tabName="Forum"></Tab> {/* Minimal/lightweight alternatives to something like Flarum */} 
+            )}  
+          </Tab> {/* Minimal/lightweight alternatives to something like Flarum */} 
           <Tab tabKey={3} tabName="Docs"> {/* IonPhaser? */}
               <div className="tabContent">
                 Documentation

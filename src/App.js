@@ -5,12 +5,6 @@ import Home from "./pages/Home";
 import Proposal from "./pages/Proposal";
 import moralisLogo from "./images/Moralis.png";
 import { ConnectButton } from "web3uikit";
-import NewStory from "./pages/NewStory";
-import MyJournals from "./pages/MyJournals";
-import Journal from "./components/Journal"
-import Rightbar from "./components/Rightbar"
-import Sidebar from "./components/Sidebar"
-import HomeAuth from "./pages/HomeAuth";
 
 const App = () => {
   return (
