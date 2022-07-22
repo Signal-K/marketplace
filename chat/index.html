@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Chat Boilerplate</title>
+        <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+        <script src="https://npmcdn.com/moralis@1.9.1/dist/moralis.js"></script>
+    </head>
+    <body>
+        <button id="btn-login">Web3 login</button>
+        <button id="btn-logout">Logout</button>
+        <br>
+        <hr>
+        <p>Create new groupchat: </p>
+        <input type="text" placeholder="Group name" id="group-name-text"/>
+        <input type="button" value="Create" id="btn-new-group-chat"/>
+        <br>
+        <p>Join groupchat</p>
+        <div id="chatRooms"></div>
+        <hr>
+
+        <script>
+            // Connect to the Moralis server
+            Moralis.initialize("");
+            Moralis.serverURL = "";
+
+            async function login() {
+                let user = Moralis.User.current();
+                if (!user) {
+                    user = await Moralis.Web3.authenticate();
+                }
+                console.log("Logged in user: ", user);
+            }
+
+            async function logOut() {
+                await Moralis.User.logOut();
+                console.log("logged out user");
+            }
+
+            // Button -> Create (value)
+            async function newGroupChat() {
+                document.getElementById("group-name-text".value);
+            }
+
+            document.getElementById("btn-login").onclick = login;
+            document.getElementById('btn-logout').onclick = logOut;
+            document.getElementById('btn-new-group-chat').onclick = newGroupChat;
+        </script>
+    </body>
+</html>

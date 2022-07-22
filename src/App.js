@@ -15,10 +15,10 @@ const App = () => {
       </div>
       <Routes> {/* Route this to signal-k/magic */}
         <Route path="/" element={<Home />} />
-        <Route path="/proposal" element={<Proposal />} />
+        <Route path="/proposal" element={<Proposal />} /> 
       </Routes>
     </>
-  );
+  );// Add game window (Unity webgl)
 };
 
 export default App;
