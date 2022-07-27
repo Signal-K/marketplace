@@ -48,13 +48,30 @@ contract Token is ERC721, Ownable {
         require(planet.lastMeal + planet.endurance > block.timestamp); // ensure the planet is still alive before allowing it to be transferred
     }
 
+    // Retrieve all the NFTs from this contract the user owns -> then display them to the frontend
+    function getAllTokensForUser(address user) public view returns (uint256[] memory) {
+        uint256 tokenCount = balanceOf(user);
+        if (tokenCount == 0) {
+            return new uint256[](0); // size 0 -> the user owns 0 nfts from this contract
+        } else {
+            uint[] memory result = new uint256[](tokenCount);
+            uint256 totalPlanets = nextId;
+            uint256 resultIndex = 0;
+            uint256 i; // for the for loop
+            for (i = 0; i < totalPlanets; i++) {
+                if (ownerOf(i) == user) {
+                    result[resultIndex] = i;
+                    resultIndex++;
+                }
+            }
+        }
+    }
+
     /* to-do
     function classify() {
         Ingame function github/signal-k/starsailors
-    }*/
-}
-
-/* To-do 
+    }
+    /* To-do 
     * Planets can breed (creating exomoons or spawning other planets -> but has to be based on real-world data from telescopes/surveys)
     * Mint function is currently randomised, however we will need to pass params into it (and possibly have multiple smart contract iterations) from classification data (the mint occurs in-game when a classification has been achieved)
     * Install truffle and update its settings, as well as ganache
@@ -62,4 +79,6 @@ contract Token is ERC721, Ownable {
     * Add the pet (Phaser) game as well -> can modify this contract for aliens/monsters as well
     * Build a marketplace on top of this webapp (cadence/client directory)
     * Integrate smart contract actions/methods with in-game actions/items
-*/
+    * Introduce linked NFTs (link your "planet pet" nft with your "planet scene" nft from the game (see SCD-2))
+    */
+}
