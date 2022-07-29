@@ -21,6 +21,9 @@ async function init() {
 }
 
 async function renderGame() {
+    $("#login_button").hide();
+    $("#planet_row").html(""); // Empty the list of nfts in the frontend before re-rendering (this is to prevent duplicating front-end components upon frontend-action)
+
     // Render properties from the smart contract
     window.web3 = await Moralis.Web3.enable();
     let abi = await getAbi();
@@ -33,32 +36,55 @@ async function renderGame() {
         renderPlanet(planetId, details);
     });
     $("#game").show();
-    $("login_button").hide();
 }
 
 function renderPlanet(id, data) {
     // Calculate planet starvation time
-    let deathTime = new Date((parseInt(data.lastMeal) + parseInt(data.endurance)) * 1000);
     let now = new Date();
-    
-    if (now > deathTime) { // the pet is dead
-        deathTime = "<b>DEAD</b>";
-    }
+    let maxTime = data.endurance;
+    let currentUnix = Math.floor(now.getTime() / 1000); // time in seconds rounded to nearest second (current unix time)
+    let secondsLeft = (parseInt(data.lastMeal) + parseInt(data.endurance)) - currentUnix;
+    let percentageLeft = secondsLeft / maxTime;
+    let percentageString = (percentageLeft * 100) + '%'; 
+    let deathTime = new Date((parseInt(data.lastMeal) + parseInt(data.endurance)) * 1000);
 
-    let htmlString = `<div class="col-md-4 card" id="pet_${id}">
+    let interval = setInterval(() => {
+        let now = new Date();
+        let maxTime = data.endurance;
+        let currentUnix = Math.floor(now.getTime() / 1000); // time in seconds rounded to nearest second (current unix time)
+        let secondsLeft = (parseInt(data.lastMeal) + parseInt(data.endurance)) - currentUnix;
+        let percentageLeft = secondsLeft / maxTime;
+        let percentageString = (percentageLeft * 100) + '%';
+        $(`#planet_${id}.progress-bar`).css("width", percentageString);
+
+        if (percentageLeft < 0) {
+            clearInterval(interval);
+        }
+    }, 50000)
+
+    let htmlString = `<div class="col-md-4 card mx-1" id="pet_${id}">
         <img class="card-img-top" src="" class="pet_img">
             <div class="card-body">
                 <div>Id: <span class="planet_id">${id}</span></div>
                 <div>Damage: <span class="planet_damage">${data.damage}</span></div>
                 <div>Magic: <span class="planet_magic">${data.magic}</span></div>
                 <div>Endurance: <span class="planet_endurance">${data.endurance}</span></div>
-                <div>Time to starvation: <span class="planet_starvation_time">${deathTime}</span></div>
-                <button data-pet-id="${id}" class="feed_button" class="btn btn-primary btn-block">Feed</button>
+                <div class="progress">
+                    <div class="progress-bar" style="width: ${percentageString}%;">
+
+                    </div>
+                </div>
+                <button data-pet-id="${id}" class="feed_button btn btn-primary btn-block">Feed</button>
             </div>
         </div>`;
 
     let element = $.parseHTML(htmlString)
     $("#planet_row").append(element);
+
+    // Feed button listener action
+    $(`#planet_${id} .feed_button`).click(() => { // now this function is linked to the button component
+        feed(id); // clicking on the button executes the feed smart contract action
+    });
 }
 
 function getAbi() {
@@ -77,11 +103,6 @@ async function feed(planetId) {
         renderGame();
     }));
 }
-
-$("#feed_button").click(() => {
-    let planetId = $("#feed_button").attr("data-planet-id");
-    feed(planetId); 
-});
 
 init();
 

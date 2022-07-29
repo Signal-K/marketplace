@@ -10,6 +10,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 contract Token is ERC721, Ownable {
+    /* Connections with other contracts
+    ERC20Rewards private _rewardsToken;
+    * Staking contract
+    * Other NFT contracts (maybe add a function to add links to others in the future, thus making them partially dynamic?)
+    * Regular erc20 rewards
+    */
+
     struct Planet {
         // uint256 planetId/tokenId
         uint8 damage; // 0-255
@@ -17,6 +24,47 @@ contract Token is ERC721, Ownable {
         uint256 lastMeal;
         uint256 endurance; // 24 hours or die (eat)
     }
+
+    // list of planet types
+    enum Species { 
+        LAVA,
+        WATER,
+        ROCKY,
+        GAS,
+        ICE,
+        LUSH,
+        CRATER,
+        VOLCANIC,
+        RINGED
+    }
+
+    // Some planets may fall into multiple types/species - how do we do this? "Species" can refer to name, main species, this can be a secondary species/type?
+    uint8[9] private SpeciesTypes = [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        4,
+        5,
+        6
+    ]; // numbers refer to list/array of speciesTypes -> e.g. above list in Species
+
+    // Which types of planets can evolve?
+    bool[9] evolves = [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+    ];
+
+    address public manager; // contract manager
 
     uint256 nextId = 0;
 
@@ -80,5 +128,7 @@ contract Token is ERC721, Ownable {
     * Build a marketplace on top of this webapp (cadence/client directory)
     * Integrate smart contract actions/methods with in-game actions/items
     * Introduce linked NFTs (link your "planet pet" nft with your "planet scene" nft from the game (see SCD-2))
+    * Is it possible to split this into multiple contract components? Already have the linking option mentioned above ^^
+    * Poke -> https://github.com/tytzM17/Lokian.eth/blob/main/contracts/project.eth.sol
     */
 }

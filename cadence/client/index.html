@@ -13,12 +13,34 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-                <h1 class="display-4">Welcome</h1>
+        <nav class="menu navbar navbar-expand-md navbar-light"> <!--Start navbar-->
+            <a class="navbar-brand" href="index.html"><b>Star Sailors Planets Game</b></a>
+            <div class="navbar-collapse collapse justify-content-end">
+                <div>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">My Planets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">Breed</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="container">
+        </nav> <!--End nav section-->
+        <div class="promo"> <!--Start promo section-->
+            <div class="container">
+                <div class="banner">
+                    <img src="banner.png" class="planet_group">
+                    <h3>Collect and breed your planets</h3>
+                    <button class="btn btn-primary btn-homepage">Get Started</button>
+                </div>
+            </div>
+        </div> <!--End promo section-->
+        <div class="container"> <!--Planet nft body content section-->
             <button id="login_button">Sign in with Metamask</button>
             <div id="game">
                 <div class="row" id="planet_row">
